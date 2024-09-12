@@ -1,7 +1,13 @@
 package main
 
-import "fmt"
+import (
+	"github.com/felipeversiane/donate-api/internal/infra/api/router"
+	"github.com/gin-gonic/gin"
+)
 
 func main() {
-	fmt.Print("Hello World")
+	g := gin.New()
+	g.Use(gin.Recovery())
+	router.SetupRoutes(g)
+	g.Run()
 }
