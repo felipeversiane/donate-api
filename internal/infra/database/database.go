@@ -8,8 +8,8 @@ import (
 )
 
 var (
-	Db   DatabaseInterface
-	Once sync.Once
+	Database DatabaseInterface
+	once     sync.Once
 )
 
 type database struct {
@@ -28,7 +28,7 @@ func NewDatabase(db *pgxpool.Pool) DatabaseInterface {
 
 func NewDatabaseConnection(ctx context.Context, dsn string) error {
 	var err error
-	Once.Do(func() {
+	once.Do(func() {
 		poolConfig, parseErr := pgxpool.ParseConfig(dsn)
 		if parseErr != nil {
 			err = parseErr
@@ -41,9 +41,9 @@ func NewDatabaseConnection(ctx context.Context, dsn string) error {
 			return
 		}
 
-		Db = NewDatabase(pool)
+		Database = NewDatabase(pool)
 
-		if pingErr := Db.Ping(ctx); pingErr != nil {
+		if pingErr := Database.Ping(ctx); pingErr != nil {
 			err = pingErr
 		}
 	})
