@@ -42,7 +42,7 @@ services:
     env_file: .env
     build:
       context: .
-      dockerfile: build/api/Dockerfile
+      dockerfile: build/server/Dockerfile
     image: app
     container_name: go02
     restart: unless-stopped
@@ -52,6 +52,18 @@ services:
       - golangnetwork
     expose:
       - "${API_PORT}"
+
+  nginx:
+    image: nginx:alpine
+    container_name: nx02
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./conf/nginx/nginx.conf:/etc/nginx/nginx.conf
+    depends_on:
+      - api
+    networks:
+      - golangnetwork
 
 
 
