@@ -12,16 +12,16 @@ import (
 func main() {
 	cfg := config.NewConfig()
 
-	logger := log.NewLogger(cfg.Log)
+	logger := log.NewLogger(cfg.GetLogConfig())
 	logger.Configure()
 
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
-	database := database.NewDatabaseConnection(ctx, cfg.Database)
+	database := database.NewDatabaseConnection(ctx, cfg.GetDatabaseConfig())
 	defer database.Close()
 
-	server := server.NewServer(cfg.Server, database)
+	server := server.NewServer(cfg.GetServerConfig(), database)
 	server.SetupRouter()
 	server.Start()
 }

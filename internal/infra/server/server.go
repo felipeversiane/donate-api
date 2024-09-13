@@ -14,7 +14,7 @@ type ServerInterface interface {
 	Start()
 }
 
-type Server struct {
+type server struct {
 	router   *gin.Engine
 	config   config.ServerConfig
 	database database.DatabaseInterface
@@ -24,7 +24,7 @@ func NewServer(
 	cfg config.ServerConfig,
 	database database.DatabaseInterface,
 ) ServerInterface {
-	server := &Server{
+	server := &server{
 		router:   gin.New(),
 		config:   cfg,
 		database: database,
@@ -32,7 +32,7 @@ func NewServer(
 	return server
 }
 
-func (s *Server) SetupRouter() {
+func (s *server) SetupRouter() {
 	s.router.Use(gin.Recovery())
 	s.router.GET("/health", func(c *gin.Context) {
 		c.JSON(200, gin.H{
@@ -41,7 +41,7 @@ func (s *Server) SetupRouter() {
 	})
 }
 
-func (s *Server) Start() {
+func (s *server) Start() {
 	port := s.config.Port
 	if port == "" {
 		port = "8000"

@@ -10,10 +10,16 @@ var (
 	once sync.Once
 )
 
-type Config struct {
+type config struct {
 	Database DatabaseConfig
 	Server   ServerConfig
 	Log      LogConfig
+}
+
+type ConfigInterface interface {
+	GetDatabaseConfig() DatabaseConfig
+	GetServerConfig() ServerConfig
+	GetLogConfig() LogConfig
 }
 
 type DatabaseConfig struct {
@@ -32,10 +38,10 @@ type LogConfig struct {
 	Level string
 }
 
-func NewConfig() *Config {
-	var config *Config
+func NewConfig() ConfigInterface {
+	var cfg *config
 	once.Do(func() {
-		config = &Config{
+		cfg = &config{
 			Database: DatabaseConfig{
 				Host:     getEnvOrDie("POSTGRES_HOST"),
 				Port:     getEnvOrDie("POSTGRES_PORT"),
@@ -51,7 +57,7 @@ func NewConfig() *Config {
 			},
 		}
 	})
-	return config
+	return cfg
 }
 
 func getEnvOrDie(key string) string {
@@ -60,4 +66,16 @@ func getEnvOrDie(key string) string {
 		panic(fmt.Errorf("missing environment variable %s", key))
 	}
 	return value
+}
+
+func (c *config) GetDatabaseConfig() DatabaseConfig {
+	return c.Database
+}
+
+func (c *config) GetServerConfig() ServerConfig {
+	return c.Server
+}
+
+func (c *config) GetLogConfig() LogConfig {
+	return c.Log
 }

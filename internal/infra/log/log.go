@@ -7,7 +7,7 @@ import (
 	"github.com/felipeversiane/donate-api/internal/infra/config"
 )
 
-type Logger struct {
+type logger struct {
 	config config.LogConfig
 }
 
@@ -16,10 +16,10 @@ type LoggerInterface interface {
 }
 
 func NewLogger(config config.LogConfig) LoggerInterface {
-	return &Logger{config}
+	return &logger{config}
 }
 
-func (l *Logger) Configure() {
+func (l *logger) Configure() {
 	level := getLogLevel(l.config)
 	logConfig := slog.New(slog.NewTextHandler(os.Stdout, &slog.HandlerOptions{Level: level}))
 	slog.SetDefault(logConfig)

@@ -16,7 +16,7 @@ var (
 	db   DatabaseInterface
 )
 
-type Database struct {
+type database struct {
 	db     *pgxpool.Pool
 	config config.DatabaseConfig
 }
@@ -25,16 +25,6 @@ type DatabaseInterface interface {
 	GetDB() *pgxpool.Pool
 	Ping(ctx context.Context) error
 	Close()
-}
-
-func newDatabase(
-	db *pgxpool.Pool,
-	config config.DatabaseConfig,
-) DatabaseInterface {
-	return &Database{
-		db:     db,
-		config: config,
-	}
 }
 
 func NewDatabaseConnection(ctx context.Context, config config.DatabaseConfig) DatabaseInterface {
@@ -52,7 +42,10 @@ func NewDatabaseConnection(ctx context.Context, config config.DatabaseConfig) Da
 			return
 		}
 
-		db = newDatabase(pool, config)
+		db = &database{
+			db:     pool,
+			config: config,
+		}
 
 		if pingErr := db.Ping(ctx); pingErr != nil {
 			slog.Error("database ping failed", slog.Any("error", pingErr))
@@ -62,15 +55,15 @@ func NewDatabaseConnection(ctx context.Context, config config.DatabaseConfig) Da
 	return db
 }
 
-func (d *Database) Ping(ctx context.Context) error {
+func (d *database) Ping(ctx context.Context) error {
 	return d.db.Ping(ctx)
 }
 
-func (d *Database) Close() {
+func (d *database) Close() {
 	d.db.Close()
 }
 
-func (d *Database) GetDB() *pgxpool.Pool {
+func (d *database) GetDB() *pgxpool.Pool {
 	return d.db
 }
 
