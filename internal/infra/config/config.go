@@ -13,6 +13,7 @@ var (
 type Config struct {
 	Database DatabaseConfig
 	Server   ServerConfig
+	Log      LogConfig
 }
 
 type DatabaseConfig struct {
@@ -25,6 +26,10 @@ type DatabaseConfig struct {
 
 type ServerConfig struct {
 	Port string
+}
+
+type LogConfig struct {
+	Level string
 }
 
 func NewConfig() *Config {
@@ -40,6 +45,9 @@ func NewConfig() *Config {
 			},
 			Server: ServerConfig{
 				Port: getEnvOrDie("API_PORT"),
+			},
+			Log: LogConfig{
+				Level: getEnvOrDie("LOG_LEVEL"),
 			},
 		}
 	})
