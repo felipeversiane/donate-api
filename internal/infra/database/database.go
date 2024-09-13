@@ -16,7 +16,7 @@ var (
 	db   DatabaseInterface
 )
 
-type database struct {
+type Database struct {
 	db     *pgxpool.Pool
 	config config.DatabaseConfig
 }
@@ -31,7 +31,7 @@ func newDatabase(
 	db *pgxpool.Pool,
 	config config.DatabaseConfig,
 ) DatabaseInterface {
-	return &database{
+	return &Database{
 		db:     db,
 		config: config,
 	}
@@ -62,15 +62,15 @@ func NewDatabaseConnection(ctx context.Context, config config.DatabaseConfig) Da
 	return db
 }
 
-func (d *database) Ping(ctx context.Context) error {
+func (d *Database) Ping(ctx context.Context) error {
 	return d.db.Ping(ctx)
 }
 
-func (d *database) Close() {
+func (d *Database) Close() {
 	d.db.Close()
 }
 
-func (d *database) GetDB() *pgxpool.Pool {
+func (d *Database) GetDB() *pgxpool.Pool {
 	return d.db
 }
 
