@@ -4,7 +4,7 @@ import (
 	"context"
 
 	"github.com/felipeversiane/donate-api/internal/infra/config"
-	"github.com/felipeversiane/donate-api/internal/infra/log"
+	"github.com/felipeversiane/donate-api/internal/infra/config/log"
 	"github.com/felipeversiane/donate-api/internal/infra/server"
 	"github.com/felipeversiane/donate-api/internal/infra/services/aws"
 	"github.com/felipeversiane/donate-api/internal/infra/services/database"

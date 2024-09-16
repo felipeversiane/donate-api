@@ -5,6 +5,7 @@ import (
 	"log/slog"
 
 	"github.com/felipeversiane/donate-api/internal/infra/config"
+	"github.com/felipeversiane/donate-api/internal/infra/config/log"
 	"github.com/felipeversiane/donate-api/internal/infra/services/aws"
 	"github.com/felipeversiane/donate-api/internal/infra/services/database"
 	"github.com/gin-gonic/gin"
@@ -46,6 +47,7 @@ func (s *server) SetupRouter() {
 }
 
 func (s *server) Start() {
+	s.router.Use(log.LogMiddleware())
 	port := s.config.Port
 	if port == "" {
 		port = "8000"
