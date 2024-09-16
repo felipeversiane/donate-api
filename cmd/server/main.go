@@ -4,9 +4,10 @@ import (
 	"context"
 
 	"github.com/felipeversiane/donate-api/internal/infra/config"
-	"github.com/felipeversiane/donate-api/internal/infra/database"
 	"github.com/felipeversiane/donate-api/internal/infra/log"
 	"github.com/felipeversiane/donate-api/internal/infra/server"
+	"github.com/felipeversiane/donate-api/internal/infra/services/aws"
+	"github.com/felipeversiane/donate-api/internal/infra/services/database"
 )
 
 func main() {
@@ -21,7 +22,11 @@ func main() {
 	database := database.NewDatabaseConnection(ctx, cfg.GetDatabaseConfig())
 	defer database.Close()
 
-	server := server.NewServer(cfg.GetServerConfig(), database)
+	cloud := aws.NewCloudService(cfg.GetCloudServiceConfig())
+	objectStorage := aws.NewObjectStorage(cloud.GetSession(), cfg.GetCloudServiceConfig())
+	objectStorage.CreateBucket(context.Context(context.TODO()))
+
+	server := server.NewServer(cfg.GetServerConfig(), database, objectStorage)
 	server.SetupRouter()
 	server.Start()
 }

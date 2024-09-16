@@ -10,16 +10,18 @@ var (
 	once sync.Once
 )
 
-type config struct {
-	Database DatabaseConfig
-	Server   ServerConfig
-	Log      LogConfig
+type Config struct {
+	Database     DatabaseConfig
+	Server       ServerConfig
+	Log          LogConfig
+	CloudService CloudServiceConfig
 }
 
 type ConfigInterface interface {
 	GetDatabaseConfig() DatabaseConfig
 	GetServerConfig() ServerConfig
 	GetLogConfig() LogConfig
+	GetCloudServiceConfig() CloudServiceConfig
 }
 
 type DatabaseConfig struct {
@@ -38,10 +40,24 @@ type LogConfig struct {
 	Level string
 }
 
+type CloudServiceConfig struct {
+	Region          string
+	AccessKey       string
+	SecretAccessKey string
+	Endpoint        string
+	ObjectStorage   ObjectStorageConfig
+}
+
+type ObjectStorageConfig struct {
+	Bucket string
+	URL    string
+	ACL    string
+}
+
 func NewConfig() ConfigInterface {
-	var cfg *config
+	var cfg *Config
 	once.Do(func() {
-		cfg = &config{
+		cfg = &Config{
 			Database: DatabaseConfig{
 				Host:     getEnvOrDie("POSTGRES_HOST"),
 				Port:     getEnvOrDie("POSTGRES_PORT"),
@@ -54,6 +70,17 @@ func NewConfig() ConfigInterface {
 			},
 			Log: LogConfig{
 				Level: getEnvOrDie("LOG_LEVEL"),
+			},
+			CloudService: CloudServiceConfig{
+				Region:          getEnvOrDie("AWS_REGION"),
+				AccessKey:       getEnvOrDie("AWS_ACCESS_KEY_ID"),
+				SecretAccessKey: getEnvOrDie("AWS_SECRET_ACCESS_KEY"),
+				Endpoint:        getEnvOrDie("AWS_ENDPOINT"),
+				ObjectStorage: ObjectStorageConfig{
+					Bucket: getEnvOrDie("S3_BUCKET"),
+					URL:    getEnvOrDie("S3_URL"),
+					ACL:    getEnvOrDie("S3_ACL"),
+				},
 			},
 		}
 	})
@@ -68,14 +95,18 @@ func getEnvOrDie(key string) string {
 	return value
 }
 
-func (c *config) GetDatabaseConfig() DatabaseConfig {
+func (c *Config) GetDatabaseConfig() DatabaseConfig {
 	return c.Database
 }
 
-func (c *config) GetServerConfig() ServerConfig {
+func (c *Config) GetServerConfig() ServerConfig {
 	return c.Server
 }
 
-func (c *config) GetLogConfig() LogConfig {
+func (c *Config) GetLogConfig() LogConfig {
 	return c.Log
+}
+
+func (c *Config) GetCloudServiceConfig() CloudServiceConfig {
+	return c.CloudService
 }

@@ -1,7 +1,7 @@
 package donate
 
 import (
-	"github.com/felipeversiane/donate-api/internal/infra/database"
+	"github.com/felipeversiane/donate-api/internal/infra/services/database"
 )
 
 type donateRepository struct {
