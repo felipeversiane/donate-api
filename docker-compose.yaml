@@ -36,7 +36,20 @@ services:
         condition: service_healthy
     networks:
       - golangnetwork
-
+  minio:
+    image: minio/minio:latest
+    container_name: mn03
+    command: server /data --console-address ":9001"
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    environment:
+      MINIO_ROOT_USER: minioadmin
+      MINIO_ROOT_PASSWORD: minioadmin
+    volumes:
+      - ./data:/data
+    networks: 
+      - golangnetwork
 
   api:
     env_file: .env
@@ -48,6 +61,7 @@ services:
     restart: unless-stopped
     depends_on:
       - migrate
+      - minio
     networks:
       - golangnetwork
     expose:
