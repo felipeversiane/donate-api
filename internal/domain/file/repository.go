@@ -1,13 +1,13 @@
 package file
 
 import (
-	"github.com/felipeversiane/donate-api/internal/infra/services/aws"
+	"github.com/felipeversiane/donate-api/internal/infra/services/cloud"
 	"github.com/felipeversiane/donate-api/internal/infra/services/database"
 )
 
 type fileRepository struct {
 	db            database.DatabaseInterface
-	objectStorage aws.ObjectStorageInterface
+	objectStorage cloud.ObjectStorageInterface
 }
 
 type FileRepositoryInterface interface {
@@ -15,7 +15,7 @@ type FileRepositoryInterface interface {
 
 func NewFileRepository(
 	db database.DatabaseInterface,
-	objectStorage aws.ObjectStorageInterface,
+	objectStorage cloud.ObjectStorageInterface,
 ) FileRepositoryInterface {
 	return &fileRepository{
 		db:            db,

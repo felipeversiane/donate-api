@@ -6,7 +6,7 @@ import (
 
 	"github.com/felipeversiane/donate-api/internal/infra/config"
 	"github.com/felipeversiane/donate-api/internal/infra/config/log"
-	"github.com/felipeversiane/donate-api/internal/infra/services/aws"
+	"github.com/felipeversiane/donate-api/internal/infra/services/cloud"
 	"github.com/felipeversiane/donate-api/internal/infra/services/database"
 	"github.com/gin-gonic/gin"
 )
@@ -20,13 +20,13 @@ type server struct {
 	router        *gin.Engine
 	config        config.ServerConfig
 	database      database.DatabaseInterface
-	objectStorage aws.ObjectStorageInterface
+	objectStorage cloud.ObjectStorageInterface
 }
 
 func NewServer(
 	cfg config.ServerConfig,
 	database database.DatabaseInterface,
-	objectStorage aws.ObjectStorageInterface,
+	objectStorage cloud.ObjectStorageInterface,
 ) ServerInterface {
 	server := &server{
 		router:        gin.New(),

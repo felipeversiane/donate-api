@@ -6,7 +6,7 @@ import (
 	"github.com/felipeversiane/donate-api/internal/infra/config"
 	"github.com/felipeversiane/donate-api/internal/infra/config/log"
 	"github.com/felipeversiane/donate-api/internal/infra/server"
-	"github.com/felipeversiane/donate-api/internal/infra/services/aws"
+	"github.com/felipeversiane/donate-api/internal/infra/services/cloud"
 	"github.com/felipeversiane/donate-api/internal/infra/services/database"
 )
 
@@ -22,8 +22,8 @@ func main() {
 	database := database.NewDatabaseConnection(ctx, cfg.GetDatabaseConfig())
 	defer database.Close()
 
-	cloud := aws.NewCloudService(cfg.GetCloudServiceConfig())
-	objectStorage := aws.NewObjectStorage(cloud.GetSession(), cfg.GetCloudServiceConfig())
+	cloudService := cloud.NewCloudService(cfg.GetCloudServiceConfig())
+	objectStorage := cloud.NewObjectStorage(cloudService.GetSession(), cfg.GetCloudServiceConfig())
 	objectStorage.CreateBucket(context.Context(context.TODO()))
 
 	server := server.NewServer(cfg.GetServerConfig(), database, objectStorage)
